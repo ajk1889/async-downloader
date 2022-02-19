@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import process from "process";
 import requestHandler from "./RequestHandler.mjs";
 import getCommandLineOptions from "./cliParser.mjs";

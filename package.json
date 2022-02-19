@@ -4,9 +4,7 @@
   "description": "Downloads given URL to stdout using multiple parallel connections.",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "bin": "index.js",
   "keywords": [
     "download",
     "stdout",
