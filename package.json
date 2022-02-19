@@ -20,6 +20,8 @@
   "author": "Amaljith K",
   "license": "MIT",
   "dependencies": {
+    "command-line-args": "^5.2.1",
+    "command-line-usage": "^6.1.1",
     "node-fetch": "^3.2.0"
   }
 }
