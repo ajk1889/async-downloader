@@ -17,31 +17,34 @@ function* getChunkBoundaries(totalSize, chunkSize) {
   }
 }
 
-const fetchChunk = async (start, end) =>
-  fetch(options.url, {
+const fetchChunk = async (start, end) => {
+  const data = await fetch(options.url, {
     headers: { ...options.headers, Range: `bytes=${start}-${end - 1}` },
     redirect: "follow"
   });
+  const arrayBuffer = await data.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+};
 
 const ongoingRequests = [];
 const data = await fetch(options.url, {
-  headers: options.headers,
+  headers: { ...options.headers, Range: `bytes=0-` },
   redirect: "follow"
 });
-const totalSize = parseInt(data.headers.get("content-length"));
+const totalSize = parseInt(data.headers.get("content-range").split("/")[1]);
 
 const boundaries = getChunkBoundaries(totalSize, options.buffer_size);
 let boundary = boundaries.next();
 while (!boundary.done) {
   if (ongoingRequests.length == options.connections) {
-    const response = await ongoingRequests.shift();
-    response.body.pipe(process.stdout);
+    const buffer = await ongoingRequests.shift();
+    process.stdout.write(buffer);
   }
   const [start, end] = boundary.value;
   ongoingRequests.push(fetchChunk(start, end));
   boundary = boundaries.next();
 }
 for (const task of ongoingRequests) {
-  const response = await task;
-  response.body.pipe(process.stdout);
+  const buffer = await task;
+  process.stdout.write(buffer);
 }
